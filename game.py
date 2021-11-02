@@ -1,5 +1,5 @@
 
-
+import random
 import os
 
 
@@ -11,16 +11,34 @@ class Game:
         self.number = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
         self.win_and_lost = ""
         self.draw = ""
+        self.busy_x = []
 
     def players(self):
-        self.show_game()
-        while True:
-            x = input("player1: ").strip()
-            while not x.isdigit():
+        self.clear()
+        chose = input("computer --> [1] or you --> [2], choose: ")
+        if chose == '2':
+            self.clear()
+            self.show_game()
+            o = input("player2: ").strip()
+            while not o.isdigit() or o in self.busy_x:
                 self.clear()
                 print("Error pleas try again: ")
-                x = input("player1: ").strip()
+                o = input("player2: ").strip()
+            self.check(o, self.player2)
+            self.show_game()
+            self.computer()
+        else:
+            self.computer()
+
+    def computer(self):
+        self.clear()
+        self.show_game()
+        while True:
+            x = random.choice(self.number)
+            while not x.isdigit():
+                x = random.choice(self.number)
             self.check(x, self.player1)
+            self.busy_x.append(x)
             if self.win_and_lost:
                 break
             elif self.draw:
@@ -28,7 +46,7 @@ class Game:
                 break
 
             o = input("player2: ").strip()
-            while not o.isdigit():
+            while not o.isdigit() or o in self.busy_x:
                 self.clear()
                 print("Error pleas try again: ")
                 o = input("player2: ").strip()
@@ -49,10 +67,10 @@ class Game:
         self.check_win(b, a, c, d, f, g, h, i, k)
 
     def check(self, check_num, player):
-        if check_num in self.number:
-            for i in range(len(self.number)):
-                if self.number[i] == check_num:
-                    self.number[i] = player
+        for i in range(len(self.number)):
+            if self.number[i] == check_num:
+                self.number[i] = player
+
         self.clear()
         self.show_game()
 
